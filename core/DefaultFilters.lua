@@ -348,4 +348,146 @@ function addon:SetupDefaultFilters()
 
 	end
 
+	-- [75] Pets Items
+	do
+		local petsFilter = addon:RegisterFilter('Pets', 75)
+		petsFilter.uiName = L['Pets Items']
+		petsFilter.uiDesc = L['Put pet-related items in their own section.']
+
+		local function BattleStonesIDs_Init(self)
+		  local Result = {}
+
+		  local IDs = {
+		  	------- Flawless Stones
+		  	98715; -- Marked Flawless Battle-Stone
+		  	92679; -- Flawless Aquatic Battle-Stone
+		  	92675; -- Flawless Beast Battle-Stone
+		  	92676; -- Flawless Critter Battle-Stone
+		  	92683; -- Flawless Dragonkin Battle-Stone
+		  	92665; -- Flawless Elemental Battle-Stone
+		  	92677; -- Flawless Flying Battle-Stone
+		  	92682; -- Flawless Humanoid Battle-Stone
+		  	92678; -- Flawless Magic Battle-Stone
+		  	92680; -- Flawless Mechanical Battle-Stone
+		  	92681; -- Flawless Undead Battle-Stone
+
+		  	------- Battle-training Stones
+		    116429; -- Flawless Battle-Training Stone
+		  	116424; -- Aquatic Battle-Training Stone
+		  	116374; -- Beast Battle-Training Stone
+		  	116418; -- Critter Battle-Training Stone
+		  	116419; -- Dragonkin Battle-Training Stone
+		  	116420; -- Elemental Battle-Training Stone
+		  	116421; -- Flying Battle-Training Stone
+		  	116416; -- Humanoid Battle-Training Stone
+		  	116422; -- Magic Battle-Training Stone
+		  	116417; -- Mechanical Battle-Training Stone
+		  	116423; -- Undead Battle-Training Stone
+
+		  	------- Others Stones
+		  	92742;  -- Polished Battle-Stone (Uncommon)
+		  	113193; -- Mythical Battle-Pet Stone
+		  	122457; -- Ultimate Battle-Training Stone
+		  	127755; -- Fel-Touched Battle-Training Stone
+			}
+		  AddToSet(Result, IDs)
+
+		  return Result
+		end
+
+		local function PetsMiscellaneousID_Init(self)
+		  local Result = {}
+
+		  local IDs = {
+		    ------- Consumable
+		  	86143;   -- Battle Pet Bandage
+		    37431;   -- Fetch Ball
+		    43626;   -- Happy Pet Snack
+		    43352;   -- Pet Grooming Kit
+		  	89906;   -- Magical Mini-Treat
+		    71153;   -- Magical Pet Biscuit
+		  	98114;   -- Pet Treat
+		  	98112;   -- Lesser Pet Treat
+
+		    ------- Leashes
+		    89139;   -- Chain Pet Leash
+		    44820;   -- Red Ribbon Pet Leash  
+		    37460;   -- Rope Pet Leash
+
+		    ------- Costumes
+		  	103786;  -- "Dapper Gentleman" Costume
+		  	103789;  -- "Little Princess" Costume
+		  	103795;  -- "Dread Pirate" Costume
+		  	103797;  -- Big Pink Bow
+
+			}
+		  AddToSet(Result, IDs)
+
+		  return Result
+		end
+
+		function AddToSet(Set, List)
+		  for _, v in ipairs(List) do
+		    Set[v] = true
+		  end
+		end
+
+		function petsFilter:OnInitialize(slotData)
+		  self.db = addon.db:RegisterNamespace('Pets Items', {
+				profile = {
+					mergePetsMiscellaneous = true,
+					mergePetsBattleStones = true,
+				}
+			})
+		end
+
+		function petsFilter:Update()
+		  BattleStonesIDs = nil
+		  PetsMiscellaneousIDs = nil
+		  self:SendMessage('AdiBags_FiltersChanged')
+		end
+
+		function petsFilter:GetOptions()
+			return {
+				mergePetsMiscellaneous = {
+					name = L['Pets Consumables'],
+					desc = L['Pets consumables aren\'t considered consumables, now they are a subcategory of pets items (like bandage or biscuit and battle stones)'],
+					type = 'toggle',
+					width = 'double',
+					order = 10,
+				},
+				mergePetsBattleStones = {
+					name = L['Battle-Stones'],
+					desc = L['Create an own category for Battle-Stones (doesn\'t work if "Pets Consumable" isn\'t enabled)'],
+					type = 'toggle',
+					width = 'double',
+					order = 20,
+				},
+			}, addon:GetOptionHandler(self, false, function() return self:Update() end)
+		end
+
+		function petsFilter:Filter(slotData)
+			local class, subclass = slotData.class, slotData.subclass
+			BattleStonesIDs = BattleStonesIDs or BattleStonesIDs_Init(self)
+			PetsMiscellaneousIDs = PetsMiscellaneousIDs or PetsMiscellaneousID_Init(self)
+
+	    if slotData.itemId == 82800 then -- Official item (Pet Cage)
+		  	return L['Pets']
+		  end
+
+		  if class == MISCELLANEOUS and subclass == L['Companion Pets'] then
+		    return L['Pets: Unused']
+		  end
+
+			if self.db.profile.mergePetsMiscellaneous then
+				local isBattleStone = BattleStonesIDs[slotData.itemId]
+				local isPetMiscellaneous = PetsMiscellaneousIDs[slotData.itemId]
+				if self.db.profile.mergePetsBattleStones and isBattleStone then
+					return L['Pets: Battle-Stone']
+				elseif isPetMiscellaneous or isBattleStone then
+					return L['Pets: Miscellaneous']
+			  end
+			end
+		end
+	end
 end
