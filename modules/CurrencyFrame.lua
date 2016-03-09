@@ -51,7 +51,6 @@ function mod:OnInitialize()
 		self.moduleName,
 		{
 			profile = {
-				shown = { ['*'] = true },
 				hideZeroes = true,
 				text = addon:GetFontDefaults(NumberFontNormalLarge)
 			}
@@ -105,7 +104,7 @@ function mod:OnBagFrameCreated(bag)
 	self.widget = widget
 	widget:SetHeight(16)
 	widget:RegisterForClicks("RightButtonUp")
-	widget:SetScript('OnClick', function() self:OpenOptions() end)
+	widget:SetScript('OnClick', function() ToggleCharacter("TokenFrame") end)
 	addon.SetupTooltip(widget, { L['Currency'], L['Right-click to configure.'] }, "ANCHOR_BOTTOMLEFT")
 
 	local fs = widget:CreateFontString(nil, "OVERLAY")
@@ -155,9 +154,9 @@ function mod:Update()
 	if not self.widget or updating then return end
 	updating = true
 
-	local shown, hideZeroes = self.db.profile.shown, self.db.profile.hideZeroes
-	for i, name, _, _, _, _, count, icon in IterateCurrencies() do
-		if shown[name] and (count > 0 or not hideZeroes) then
+	local hideZeroes = self.db.profile.hideZeroes
+	for i, name, _, _, _, isWatched, count, icon in IterateCurrencies() do
+		if isWatched and (count > 0 or not hideZeroes) then
 			tinsert(values, BreakUpLargeNumbers(count))
 			tinsert(values, format(ICON_STRING, icon))
 		end
@@ -182,19 +181,6 @@ end
 function mod:GetOptions()
 	local values = {}
 	return {
-		shown = {
-			name = L['Currencies to show'],
-			type = 'multiselect',
-			order = 10,
-			values = function()
-				wipe(values)
-				for i, name, _, _, _, _, _, icon in IterateCurrencies() do
-					values[name] = format(ICON_STRING, icon)..name
-				end
-				return values
-			end,
-			width = 'double',
-		},
 		hideZeroes = {
 			name = L['Hide zeroes'],
 			desc = L['Ignore currencies with null amounts.'],
