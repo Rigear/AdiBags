@@ -183,7 +183,6 @@ function addon:SetupDefaultFilters()
         },
       }, addon:GetOptionHandler(self, true)
     end
-
   end
 
   -- [85] Miscellaneous Items
@@ -199,12 +198,16 @@ function addon:SetupDefaultFilters()
             ['Teleport'] = true,
             ['Exchangeable'] = true,
             ['Chest & Openable'] = true,
+            ['Toys'] = true,
+            ['Ashran'] = true,
           },
           factionCategories = {
             ['The Tillers'] = true,
           },
           mergeEventExchangeable = true,
+          mergeQuestExchangeable = true,
           mergeEventChestOpenable = true,
+          separateToysForZone = true,
         }
       })
     end
@@ -220,6 +223,8 @@ function addon:SetupDefaultFilters()
             ['Teleport'] = 'Teleport',
             ['Exchangeable'] = 'Exchangeable',
             ['Chest & Openable'] = 'Chest & Openable',
+            ['Toys'] = 'Toys',
+            ['Ashran'] = 'Ashran',
           }
         },
 
@@ -241,12 +246,28 @@ function addon:SetupDefaultFilters()
           order = 20,
         },
 
+        mergeQuestExchangeable = {
+          name = L['Quest exchangeable items'],
+          desc = L['Consider items for repeatable quests (which give only gold and NO REPUTATION or ITEMS) as exchangeable items (like Hearty Soup Bone)'],
+          type = 'toggle',
+          width = 'double',
+          order = 25,
+        },
+
         mergeEventChestOpenable = {
           name = L['Event chest and openable items'],
           desc = L['Consider event chest and penable items as "Chest & Openable"'],
           type = 'toggle',
           width = 'double',
-          order = 25,
+          order = 30,
+        },
+
+        separateToysForZone = {
+          name = L['Separate toys category for zone'],
+          desc = L['Separating the toy according to the area that it can be used. (Example: Breath of Talador = Draenor)'],
+          type = 'toggle',
+          width = 'double',
+          order = 35,
         },
       }, addon:GetOptionHandler(self, true)
     end
@@ -256,10 +277,28 @@ function addon:SetupDefaultFilters()
         return L['Misc: Teleport']
       end
 
+      if self.db.profile.miscellaneousCategories['Toys'] then
+        if addon.MISC_TOYS[slotData.itemId] then
+          return L['Misc: Toys']
+        elseif self.db.profile.separateToysForZone then
+          if addon.MISC_TOYS_DRAENOR[slotData.itemId] then
+            return L['Misc: Toys - Draenor']
+          elseif addon.MISC_TOYS_PANDARIA[slotData.itemId] then
+            return L['Misc: Toys - Pandaria']
+          end
+        else
+          if addon.MISC_TOYS_DRAENOR[slotData.itemId] or addon.MISC_TOYS_PANDARIA[slotData.itemId] then
+            return L['Misc: Toys']
+          end
+        end
+      end
+
       if self.db.profile.miscellaneousCategories['Exchangeable'] then
         if addon.MISC_EXCHANGEABLE[slotData.itemId] then
           return L['Misc: Exchangeable']
         elseif self.db.profile.mergeEventExchangeable and addon.MISC_EVENT_EXCHANGEABLE[slotData.itemId] then
+          return L['Misc: Exchangeable']
+        elseif self.db.profile.mergeQuestExchangeable and addon.MISC_QUEST_EXCHANGEABLE[slotData.itemId] then
           return L['Misc: Exchangeable']
         end
       end
@@ -275,179 +314,17 @@ function addon:SetupDefaultFilters()
       if self.db.profile.factionCategories['The Tillers'] and addon.MISC_THE_TILLERS[slotData.itemId] then
         return L['Misc: The Tillers']
       end
-    end
-  end
 
-  -- [75] Quest Items
-  function isEventItem(slotData)
-    if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
-      return true
-    elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
-      return true
-    elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
-      return true
-    elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
-      return true
-    elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
-      return true
-    elseif addon.EVENT_BREWFEST[slotData.itemId] then
-      return true
-    elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
-      return true
-    elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
-      return true
-    elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
-      return true
-    elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
-      return true
-    elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
-      return true
-    elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
-      return true
-    end
-    return false
-  end
-  do
-    local questItemFilter = addon:RegisterFilter('Quest', 70, function(self, slotData)
-      if slotData.class == QUEST or slotData.subclass == QUEST then
-        if isEventItem(slotData) then
-          return L['Quest: Event & Seasonal']
-        else
-          return QUEST
-        end
-      else
-        local isQuestItem, questId = GetContainerItemQuestInfo(slotData.bag, slotData.slot)
-        if isEventItem(slotData) then
-          return (questId or isQuestItem) and L['Quest: Event & Seasonal']
-        else
-          return (questId or isQuestItem) and QUEST
-        end
-      end
-    end)
-    questItemFilter.uiName = L['Quest Items']
-    questItemFilter.uiDesc = L['Put quest-related items in their own section.']
-  end
-
-  -- [60] Equipment
-  do
-    local equipCategories = {
-      INVTYPE_2HWEAPON = WEAPON,
-      INVTYPE_AMMO = MISCELLANEOUS,
-      INVTYPE_BAG = MISCELLANEOUS,
-      INVTYPE_BODY = MISCELLANEOUS,
-      INVTYPE_CHEST = ARMOR,
-      INVTYPE_CLOAK = ARMOR,
-      INVTYPE_FEET = ARMOR,
-      INVTYPE_FINGER = JEWELRY,
-      INVTYPE_HAND = ARMOR,
-      INVTYPE_HEAD = ARMOR,
-      INVTYPE_HOLDABLE = WEAPON,
-      INVTYPE_LEGS = ARMOR,
-      INVTYPE_NECK = JEWELRY,
-      INVTYPE_QUIVER = MISCELLANEOUS,
-      INVTYPE_RANGED = WEAPON,
-      INVTYPE_RANGEDRIGHT = WEAPON,
-      INVTYPE_RELIC = JEWELRY,
-      INVTYPE_ROBE = ARMOR,
-      INVTYPE_SHIELD = WEAPON,
-      INVTYPE_SHOULDER = ARMOR,
-      INVTYPE_TABARD = MISCELLANEOUS,
-      INVTYPE_THROWN = WEAPON,
-      INVTYPE_TRINKET = JEWELRY,
-      INVTYPE_WAIST = ARMOR,
-      INVTYPE_WEAPON = WEAPON,
-      INVTYPE_WEAPONMAINHAND = WEAPON,
-      INVTYPE_WEAPONMAINHAND_PET = WEAPON,
-      INVTYPE_WEAPONOFFHAND = WEAPON,
-      INVTYPE_WRIST = ARMOR,
-    }
-
-    local equipmentFilter = addon:RegisterFilter('Equipment', 60, function(self, slotData)
-      local equipSlot = slotData.equipSlot
-      if equipSlot and equipSlot ~= "" then
-        local rule = self.db.profile.dispatchRule
-        local category
-        if rule == 'category' then
-          category = equipCategories[equipSlot] or _G[equipSlot]
-        elseif rule == 'slot' then
-          category = _G[equipSlot]
-        end
-        if category == ARMOR and self.db.profile.armorTypes and slotData.subclass then
-          category = slotData.subclass
-        end
-        return category or EQUIPMENT, EQUIPMENT
-      end
-    end)
-    equipmentFilter.uiName = EQUIPMENT
-    equipmentFilter.uiDesc = L['Put any item that can be equipped (including bags) into the "Equipment" section.']
-
-    function equipmentFilter:OnInitialize()
-      self.db = addon.db:RegisterNamespace('Equipment', { profile = { dispatchRule = 'category', armorTypes = false } })
-    end
-
-    function equipmentFilter:GetOptions()
-      return {
-        dispatchRule = {
-          name = L['Section setup'],
-          desc = L['Select the sections in which the items should be dispatched.'],
-          type = 'select',
-          width = 'double',
-          order = 10,
-          values = {
-            one = L['Only one section.'],
-            category = L['Four general sections.'],
-            slot = L['One section per item slot.'],
-          },
-        },
-        armorTypes = {
-          name = L['Split armors by types'],
-          desc = L['Check this so armors are dispatched in four sections by type.'],
-          type = 'toggle',
-          order = 20,
-          disabled = function() return self.db.profile.dispatchRule ~= 'category' end,
-        },
-      }, addon:GetOptionHandler(self, true)
-    end
-  end
-
-  -- [70] Event & Seasonal Items
-  do
-    local eventFilter = addon:RegisterFilter('Event', 75)
-    eventFilter.uiName = L['Event']
-    eventFilter.uiDesc = L['Put event and seasonal items in their own section.']
-
-    function eventFilter:Filter(slotData)
-      if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
-        return L['Event: Lunar Festival']
-      elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
-        return L['Event: Love is in the air']
-      elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
-        return L['Event: Noblegarden']
-      elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
-        return L['Event: Childrens Week']
-      elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
-        return L['Event: Midsummer']
-      elseif addon.EVENT_BREWFEST[slotData.itemId] then
-        return L['Event: Brewfest']
-      elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
-        return L['Event: Hallows End']
-      elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
-        return L['Event: Pilgrims Bounty']
-      elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
-        return L['Event: Winter Veil']
-      elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
-        return L['Event: Argente Tournament']
-      elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
-        return L['Event: Darkmoon Faire']
-      elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
-        return L['Event: Brawlers Guild']
+      if self.db.profile.miscellaneousCategories['Ashran'] and addon.MISC_ASHRAN[slotData.itemId] then
+        return L['Misc: Ashran']
       end
     end
   end
 
-  -- [15] Garrison Items
+
+  -- [80] Garrison Items
   do
-    local garrisonFilter = addon:RegisterFilter('Garrison', 15)
+    local garrisonFilter = addon:RegisterFilter('Garrison', 80)
     garrisonFilter.uiName = L['Garrison']
     garrisonFilter.uiDesc = L['Put garrison related items in their own section.']
 
@@ -506,9 +383,9 @@ function addon:SetupDefaultFilters()
     end
   end
 
-  -- [10] Pets Items
+  -- [75] Pets Items
   do
-    local petsFilter = addon:RegisterFilter('Pets', 10)
+    local petsFilter = addon:RegisterFilter('Pets', 75)
     petsFilter.uiName = L['Pets']
     petsFilter.uiDesc = L['Put pet-related items in their own section.']
 
@@ -547,10 +424,6 @@ function addon:SetupDefaultFilters()
         return L['Pets']
       end
 
-      if class == MISCELLANEOUS and subclass == L['Companion Pets'] then
-        return L['Pets: Unused']
-      end
-
       if self.db.profile.mergePetsMiscellaneous then
         local isBattleStone = addon.PETS_BATTLE_STONES_IDS[slotData.itemId]
         local isPetMiscellaneous = addon.PETS_MISCELLANEOUS_IDS[slotData.itemId]
@@ -560,12 +433,220 @@ function addon:SetupDefaultFilters()
           return L['Pets: Miscellaneous']
         end
       end
+
+      if class == MISCELLANEOUS and subclass == L['Companion Pets'] then
+        return L['Pets: Unused']
+      end
+
     end
   end
 
-  -- [5] Item classes
+  -- [60] Quest Items
   do
-    local itemCat = addon:RegisterFilter('ItemCategory', 5)
+
+    function isEventItem(slotData)
+      if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
+        return true
+      elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
+        return true
+      elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
+        return true
+      elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
+        return true
+      elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
+        return true
+      elseif addon.EVENT_BREWFEST[slotData.itemId] then
+        return true
+      elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
+        return true
+      elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
+        return true
+      elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
+        return true
+      elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
+        return true
+      elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
+        return true
+      elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
+        return true
+      end
+      return false
+    end
+
+    local questFilter = addon:RegisterFilter('Quest', 60)
+    questFilter.uiName = L['Quest']
+    questFilter.uiDesc = L['Put quest-related items in their own section.']
+
+    function questFilter:OnInitialize(slotData)
+      self.db = addon.db:RegisterNamespace('Quest', {
+        profile = {
+          mergeReputationItems = true,
+          mergeEventSeasonalItems = true,
+        }
+      })
+    end
+
+    function questFilter:GetOptions()
+      return {
+        mergeReputationItems = {
+          name = L['Reputation Items'],
+          desc = L['Quest items to earn reputation and NOT QUEST items made ONLY to exchange for reputation are placed in this session (like Netherwing Egg)'],
+          type = 'toggle',
+          width = 'double',
+          order = 10,
+        },
+        mergeEventSeasonalItems = {
+          name = L['Event & Seasonal Items'],
+          desc = L['Items quests that come from events are placed in a separate sub-category'],
+          type = 'toggle',
+          width = 'double',
+          order = 20,
+        },
+      }, addon:GetOptionHandler(self, true)
+    end
+
+    function questFilter:Filter(slotData)
+      if self.db.profile.mergeReputationItems and addon.QUESTS_REPUTATION[slotData.itemId] then
+        return L['Quest: Reputation']
+      else
+        if slotData.class == QUEST or slotData.subclass == QUEST then
+          if self.db.profile.mergeEventSeasonalItems and isEventItem(slotData) then
+            return L['Quest: Event & Seasonal']
+          else
+            return L['Quest']
+          end
+        else
+          local isQuestItem, questId = GetContainerItemQuestInfo(slotData.bag, slotData.slot)
+          if self.db.profile.mergeEventSeasonalItems and isEventItem(slotData) then
+            return (questId or isQuestItem) and L['Quest: Event & Seasonal']
+          else
+            return (questId or isQuestItem) and L['Quest']
+          end
+        end
+      end
+    end
+  end
+
+  -- [55] Event & Seasonal Items
+  do
+    local eventFilter = addon:RegisterFilter('Event', 55)
+    eventFilter.uiName = L['Event']
+    eventFilter.uiDesc = L['Put event and seasonal items in their own section.']
+
+    function eventFilter:Filter(slotData)
+      if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
+        return L['Event: Lunar Festival']
+      elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
+        return L['Event: Love is in the air']
+      elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
+        return L['Event: Noblegarden']
+      elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
+        return L['Event: Childrens Week']
+      elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
+        return L['Event: Midsummer']
+      elseif addon.EVENT_BREWFEST[slotData.itemId] then
+        return L['Event: Brewfest']
+      elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
+        return L['Event: Hallows End']
+      elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
+        return L['Event: Pilgrims Bounty']
+      elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
+        return L['Event: Winter Veil']
+      elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
+        return L['Event: Argente Tournament']
+      elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
+        return L['Event: Darkmoon Faire']
+      elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
+        return L['Event: Brawlers Guild']
+      end
+    end
+  end
+
+  -- [50] Equipment
+  do
+    local equipCategories = {
+      INVTYPE_2HWEAPON = WEAPON,
+      INVTYPE_AMMO = MISCELLANEOUS,
+      INVTYPE_BAG = MISCELLANEOUS,
+      INVTYPE_BODY = MISCELLANEOUS,
+      INVTYPE_CHEST = ARMOR,
+      INVTYPE_CLOAK = ARMOR,
+      INVTYPE_FEET = ARMOR,
+      INVTYPE_FINGER = JEWELRY,
+      INVTYPE_HAND = ARMOR,
+      INVTYPE_HEAD = ARMOR,
+      INVTYPE_HOLDABLE = WEAPON,
+      INVTYPE_LEGS = ARMOR,
+      INVTYPE_NECK = JEWELRY,
+      INVTYPE_QUIVER = MISCELLANEOUS,
+      INVTYPE_RANGED = WEAPON,
+      INVTYPE_RANGEDRIGHT = WEAPON,
+      INVTYPE_RELIC = JEWELRY,
+      INVTYPE_ROBE = ARMOR,
+      INVTYPE_SHIELD = WEAPON,
+      INVTYPE_SHOULDER = ARMOR,
+      INVTYPE_TABARD = MISCELLANEOUS,
+      INVTYPE_THROWN = WEAPON,
+      INVTYPE_TRINKET = JEWELRY,
+      INVTYPE_WAIST = ARMOR,
+      INVTYPE_WEAPON = WEAPON,
+      INVTYPE_WEAPONMAINHAND = WEAPON,
+      INVTYPE_WEAPONMAINHAND_PET = WEAPON,
+      INVTYPE_WEAPONOFFHAND = WEAPON,
+      INVTYPE_WRIST = ARMOR,
+    }
+
+    local equipmentFilter = addon:RegisterFilter('Equipment', 50, function(self, slotData)
+      local equipSlot = slotData.equipSlot
+      if equipSlot and equipSlot ~= "" then
+        local rule = self.db.profile.dispatchRule
+        local category
+        if rule == 'category' then
+          category = equipCategories[equipSlot] or _G[equipSlot]
+        elseif rule == 'slot' then
+          category = _G[equipSlot]
+        end
+        if category == ARMOR and self.db.profile.armorTypes and slotData.subclass then
+          category = slotData.subclass
+        end
+        return category or EQUIPMENT, EQUIPMENT
+      end
+    end)
+    equipmentFilter.uiName = EQUIPMENT
+    equipmentFilter.uiDesc = L['Put any item that can be equipped (including bags) into the "Equipment" section.']
+
+    function equipmentFilter:OnInitialize()
+      self.db = addon.db:RegisterNamespace('Equipment', { profile = { dispatchRule = 'category', armorTypes = false } })
+    end
+
+    function equipmentFilter:GetOptions()
+      return {
+        dispatchRule = {
+          name = L['Section setup'],
+          desc = L['Select the sections in which the items should be dispatched.'],
+          type = 'select',
+          width = 'double',
+          order = 10,
+          values = {
+            one = L['Only one section.'],
+            category = L['Four general sections.'],
+            slot = L['One section per item slot.'],
+          },
+        },
+        armorTypes = {
+          name = L['Split armors by types'],
+          desc = L['Check this so armors are dispatched in four sections by type.'],
+          type = 'toggle',
+          order = 20,
+          disabled = function() return self.db.profile.dispatchRule ~= 'category' end,
+        },
+      }, addon:GetOptionHandler(self, true)
+    end
+  end
+
+  -- [10] Item classes
+  do
+    local itemCat = addon:RegisterFilter('ItemCategory', 10)
     itemCat.uiName = L['Item category']
     itemCat.uiDesc = L['Put items in sections depending on their first-level category at the Auction House.']
       ..'\n|cffff7700'..L['Please note this filter matchs every item. Any filter with lower priority than this one will have no effect.']..'|r'

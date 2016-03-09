@@ -124,12 +124,12 @@ addon.DEFAULT_SETTINGS = {
       Backpack = { point = "BOTTOMRIGHT", xOffset = -32, yOffset = 200 },
       Bank = { point = "TOPLEFT", xOffset = 32, yOffset = -104 },
     },
-    scale = 0.8,
+    scale = 0.9,
     columnWidth = {
       Backpack = 4,
       Bank = 6,
     },
-    maxHeight = 0.60,
+    maxHeight = 0.80,
     qualityHighlight = true,
     qualityOpacity = 1.0,
     dimJunk = true,
@@ -145,13 +145,13 @@ addon.DEFAULT_SETTINGS = {
       notWhenTrading = 1,
     },
     skin = {
-      background = "Blizzard Tooltip",
+      background = "Blizzard Tabard Background",
       border = "Blizzard Tooltip",
       borderWidth = 16,
       insets = 3,
-      BackpackColor = { 0, 0, 0, 1 },
-      BankColor = { 0, 0, 0.5, 1 },
-      ReagentBankColor = { 0, 0.5, 0, 1 },
+      BackpackColor = { 1, 1, 1, 0.95 },
+      BankColor = { 0, 0, 1, 0.95 },
+      ReagentBankColor = { 0, 1, 0, 0.95 },
     },
     rightClickConfig = true,
     autoOpen = true,
@@ -172,6 +172,15 @@ addon.DEFAULT_SETTINGS = {
 --[[
 Se possivel é preciso separar estes dados em um arquivo separado
 --]]
+
+  --[[ Modelo
+  -- 
+  [] = true, -- 
+  [] = true, -- 
+  [] = true, -- 
+  [] = true, -- 
+  [] = true, -- 
+  --]]
 
 addon.GARRISON_IDS = {
   [116395] = true, -- Comprehensive Outpost Construction Guide
@@ -194,6 +203,7 @@ addon.GARRISON_IDS = {
   [119817] = true, -- Caged Mighty Riverbeast
   [119815] = true, -- Caged Mighty Wolf
   [117397] = true, -- Nat's Lucky Coin
+  [118043] = true, -- Broken Bones
   [128373] = true, -- Rush Order: Shipyard
   [122307] = true, -- Rush Order: Barn
   [122487] = true, -- Rush Order: Gladiator's Sanctum
@@ -422,12 +432,54 @@ addon.GARRISON_SHIPYARD_IDS = {
 }
 
 addon.QUESTS_REPUTATION = {
-  ------- The Tillers
+  --[[ Draenor --]] 
+
+  -- Steamwheedle Preservation Society
+  [118099] = true, -- Gorian Artifact Fragment
+  [118100] = true, -- Highmaul Relic
+
+  --[[  Pandaria --]] 
+
+  -- The Tillers
   [79265] = true, -- Blue Feather
-  [79266] = true, --  Jade Cat
-  [79268] = true, --  Marsh Lily
-  [79264] = true, --  Ruby Shard
-  [79267] = true, --  Lovely Apple
+  [79266] = true, -- Jade Cat
+  [79268] = true, -- Marsh Lily
+  [79264] = true, -- Ruby Shard
+  [79267] = true, -- Lovely Apple
+
+  -- Order of the Cloud Serpent 
+  [104286] = true, -- Quivering Firestorm Egg
+
+  --[[  Northerend --]] 
+
+  -- The Sons of Hodir / Explorers' League
+  [42780] = true, -- Relic of Ulduar
+
+  --[[  Outland --]] 
+
+  -- The Scryers
+  [29739] = true, -- Arcane Tome
+  [30810] = true, -- Sunfury Signet
+  [29426] = true, -- Firewing Signet
+
+  -- Skettis
+  [32446] = true, -- Elixir of Shadows
+  [32620] = true, -- Time-Lost Scroll
+  [32388] = true, -- Shadow Dust
+
+  -- The Aldor
+  [30809] = true, -- Mark of Sargeras
+
+  -- Netherwing
+  [32506] = true, -- Netherwing Egg
+  [32468] = true, -- Netherdust Pollen
+  [32464] = true, -- Nethercite Ore
+  [32470] = true, -- Nethermine Flayer hideAnchor
+  [32427] = true, -- Netherwing Crystal
+
+  --[[  Kalimdor --]] 
+
+  --[[  Eastern --]] 
 }
 
 addon.PETS_BATTLE_STONES_IDS = {
@@ -485,6 +537,10 @@ addon.PETS_MISCELLANEOUS_IDS = {
   [103789] = true,  -- "Little Princess" Costume
   [103795] = true,  -- "Dread Pirate" Costume
   [103797] = true   -- Big Pink Bow
+}
+
+addon.MISC_ARCHEOLOGY = {
+  
 }
 
 addon.MISC_TELEPORT_IDS = {
@@ -588,6 +644,15 @@ addon.MISC_THE_TILLERS = {
 }
 
 addon.MISC_EXCHANGEABLE = {
+  [26045]  = true, -- Halaa Battle Token
+  [26044]  = true, -- Halaa Research Token
+  [116415] = true, -- Pet Charm
+  [124099] = true, -- Blackfang Claw
+  [91838] = true, -- Lion's Landing Commission
+}
+
+addon.MISC_QUEST_EXCHANGEABLE = {
+  [113578]  = true, -- Hearty Soup Bone
 }
 
 addon.MISC_CHEST_OPENABLE = {
@@ -621,8 +686,69 @@ addon.MISC_CHEST_OPENABLE = {
 
   -- Others
   [89613] = true,  -- Cache of Treasures
+  [34593] = true,  -- Scryer Supplies Package
+  [34594] = true,  -- Scryer Supplies Package
 }
 
+addon.MISC_TOYS = {
+  [119093] = true, -- Aviana's Feather
+  [86565] = true,  -- Battle Horn
+  [118935] = true, -- Ever-Blooming Frond
+  [113542] = true, --  Whispers of Rai'Vosh
+}
+addon.MISC_TOYS_DRAENOR = {
+  [128320] = true, -- Corrupted Primal Obelisk
+  [128502] = true, -- Hunter's Seeking Crystal
+  [119151] = true, -- Soulgrinder
+  [127669] = true, -- Skull of the Mad Chief
+  [116113] = true, -- Breath of Talador
+  [127655] = true, -- Sassy Imp
+  [115506] = true, -- Treessassin's Guise
+}
+addon.MISC_TOYS_PANDARIA = {
+  [81054] = true,  -- Kafa'kota Berry
+  [86590] = true,  -- Essence of the Breeze
+  [104293] = true, -- Scuttler's Shell
+  [104288] = true, -- Condensed Jademist 
+  [88384] = true,  -- Burlap Ritual Bag
+  [104328] = true, -- Cauterizing Core
+}
+
+addon.MISC_ASHRAN = {
+  [116411] = true, -- Scroll of Protection
+  [116410] = true, -- Scroll of Speed
+
+  -- Class Items
+  [117016] = true, -- Wand of Arcane Imprisonment
+  [117013] = true, -- Wand of Lightning Shield
+  [120327] = true, -- Guide: Sharpshooting
+  [112154] = true, -- Guide: Disengage
+  [118760] = true, -- Book of Rebirth
+  [114849] = true, -- Manual Of Spell Reflection
+  [112005] = true, -- The Jailer's Libram
+  [111926] = true, -- Codex of Ascension
+  [114846] = true, -- Sigil of Dark Simulacrum
+  [114848] = true, -- Grimoire Of Convert Demon
+  [116982] = true, -- Handbook: Preparation
+  [114843] = true, -- Handbook: Pick Pocket
+  [114847] = true, -- Tablet of Ghost Wolf
+  [114844] = true, -- Scroll of Touch of Death
+  [114842] = true, -- Book of Flight Form 
+  [114845] = true, -- Tome of Blink
+
+  -- Vendors
+  [114126] = true, -- Disposable Pocket Flying Machine
+  [115501] = true, -- Kowalski's Music Box
+  [116396] = true, -- LeBlanc's Recorder
+  [115513] = true, -- Wrynn's Vanguard Battle Standard
+  [114629] = true, -- Proximity Alarm-o-Bot 2000
+  [114124] = true, -- Phantom Potion
+  [115511] = true, -- Bizmo's Big Bang Boom Bomb
+  [114125] = true, -- Preserved Discombobulator Ray
+  [115522] = true, -- Swift Riding Crop
+  [115532] = true, -- Flimsy X-Ray Goggles
+  [116925] = true, -- Vintage Free Action Potion
+}
 
 --[[
 Itens de evento
@@ -698,7 +824,7 @@ addon.EVENT_WINTER_VEIL = {
 addon.EVENT_ARGET_TOURNAMENT = {
 }
 addon.EVENT_DARKMOON_FAIRE = {
-  [71634] = true -- Darkmoon Adventurer's Guide
+  [71634] = true, -- Darkmoon Adventurer's Guide
 }
 addon.EVENT_BRAWLERS_GUILD = {
 }

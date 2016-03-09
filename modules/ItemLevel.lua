@@ -60,7 +60,7 @@ function mod:OnInitialize()
 		profile = {
 			useSyLevel = false,
 			equippableOnly = true,
-			colorScheme = 'original',
+			colorScheme = 'level',
 			minLevel = 1,
 			ignoreJunk = true,
 			ignoreHeirloom = true,

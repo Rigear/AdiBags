@@ -40,7 +40,7 @@ local unpack = _G.unpack
 local wipe = _G.wipe
 --GLOBALS>
 
-local mod = addon:RegisterFilter('NewItem', 75, 'ABEvent-1.0')
+local mod = addon:RegisterFilter('NewItem', 65, 'ABEvent-1.0')
 mod.uiName = L['Track new items']
 mod.uiDesc = L['Track new items in each bag, displaying a glowing aura over them and putting them in a special section. "New" status can be reset by clicking on the small "N" button at top left of bags.']
 
