@@ -543,7 +543,6 @@ addon.MISC_TELEPORT_IDS = {
   [17903] = true,  -- Stormpike Insignia Rank 5
   [17904] = true,  -- Stormpike Insignia Rank 6
   [95568] = true, -- Sunreaver Beacon
-
 }
 
 addon.MISC_THE_TILLERS = {
@@ -699,6 +698,7 @@ addon.EVENT_WINTER_VEIL = {
 addon.EVENT_ARGET_TOURNAMENT = {
 }
 addon.EVENT_DARKMOON_FAIRE = {
+  [71634] = true -- Darkmoon Adventurer's Guide
 }
 addon.EVENT_BRAWLERS_GUILD = {
 }

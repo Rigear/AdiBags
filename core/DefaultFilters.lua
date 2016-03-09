@@ -278,14 +278,50 @@ function addon:SetupDefaultFilters()
     end
   end
 
-  -- [70] Quest Items
+  -- [75] Quest Items
+  function isEventItem(slotData)
+    if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
+      return true
+    elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
+      return true
+    elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
+      return true
+    elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
+      return true
+    elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
+      return true
+    elseif addon.EVENT_BREWFEST[slotData.itemId] then
+      return true
+    elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
+      return true
+    elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
+      return true
+    elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
+      return true
+    elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
+      return true
+    elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
+      return true
+    elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
+      return true
+    end
+    return false
+  end
   do
     local questItemFilter = addon:RegisterFilter('Quest', 70, function(self, slotData)
       if slotData.class == QUEST or slotData.subclass == QUEST then
-        return QUEST
+        if isEventItem(slotData) then
+          return L['Quest: Event & Seasonal']
+        else
+          return QUEST
+        end
       else
         local isQuestItem, questId = GetContainerItemQuestInfo(slotData.bag, slotData.slot)
-        return (questId or isQuestItem) and QUEST
+        if isEventItem(slotData) then
+          return (questId or isQuestItem) and L['Quest: Event & Seasonal']
+        else
+          return (questId or isQuestItem) and QUEST
+        end
       end
     end)
     questItemFilter.uiName = L['Quest Items']
@@ -371,6 +407,41 @@ function addon:SetupDefaultFilters()
           disabled = function() return self.db.profile.dispatchRule ~= 'category' end,
         },
       }, addon:GetOptionHandler(self, true)
+    end
+  end
+
+  -- [70] Event & Seasonal Items
+  do
+    local eventFilter = addon:RegisterFilter('Event', 75)
+    eventFilter.uiName = L['Event']
+    eventFilter.uiDesc = L['Put event and seasonal items in their own section.']
+
+    function eventFilter:Filter(slotData)
+      if addon.EVENT_LUNAR_FESTIVAL[slotData.itemId] then
+        return L['Event: Lunar Festival']
+      elseif addon.EVENT_LOVE_IS_IN_THE_AIR[slotData.itemId] then
+        return L['Event: Love is in the air']
+      elseif addon.EVENT_NOBLEGARDEN[slotData.itemId] then
+        return L['Event: Noblegarden']
+      elseif addon.EVENT_CHILDRENS_WEEK[slotData.itemId] then
+        return L['Event: Childrens Week']
+      elseif addon.EVENT_MIDSUMMER[slotData.itemId] then
+        return L['Event: Midsummer']
+      elseif addon.EVENT_BREWFEST[slotData.itemId] then
+        return L['Event: Brewfest']
+      elseif addon.EVENT_HALLOWS_END[slotData.itemId] then
+        return L['Event: Hallows End']
+      elseif addon.EVENT_PILGRIMS_BOUNTY[slotData.itemId] then
+        return L['Event: Pilgrims Bounty']
+      elseif addon.EVENT_WINTER_VEIL[slotData.itemId] then
+        return L['Event: Winter Veil']
+      elseif addon.EVENT_ARGET_TOURNAMENT[slotData.itemId] then
+        return L['Event: Argente Tournament']
+      elseif addon.EVENT_DARKMOON_FAIRE[slotData.itemId] then
+        return L['Event: Darkmoon Faire']
+      elseif addon.EVENT_BRAWLERS_GUILD[slotData.itemId] then
+        return L['Event: Brawlers Guild']
+      end
     end
   end
 
