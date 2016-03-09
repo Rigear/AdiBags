@@ -488,6 +488,29 @@ addon.PETS_MISCELLANEOUS_IDS = {
 }
 
 addon.MISC_TELEPORT_IDS = {
+  -- Hearthstones
+  [6948] = true,   -- Hearthstone
+  [110560] = true, -- Garrison Hearthstone
+  [64488] = true,  -- The Innkeeper's Daughter
+  [54452] = true,  -- Ethereal Portal
+  [93672] = true,  -- Dark Portal
+  [28585] = true,  -- Ruby Slippers
+  [64457] = true,  -- The Last Relic of Argus
+  [37118] = true,  -- Scroll of Recall
+  [44314] = true,  -- Scroll of Recall II
+  [44315] = true,  -- Scroll of Recall III
+
+  -- Engineering
+  [18984] = true,  -- Dimensional Ripper - Everlook
+  [18986] = true,  -- Ultrasafe Transporter: Gadgetzan
+  [48933] = true,  -- Wormhole Generator: Northrend
+  [87215] = true,  -- Wormhole Generator: Pandaria
+  [112059] = true, -- Wormhole Centrifuge
+
+  -- Alchemy
+  [58487] = true, -- Potion of Deepholm
+
+  -- Others
   [65274] = true,  -- Cloak of Coordination (alliance)
   [65274] = true,  -- Cloak of Coordination (horde)
   [63206] = true,  -- Wrap of Unity (alliance)
@@ -504,6 +527,9 @@ addon.MISC_TELEPORT_IDS = {
   [46874] = true,  -- Argent Crusader's Tabard
   [63378] = true,  -- Hellscream's Reach Tabard
   [63379] = true,  -- Baradin's Wardens Tabard
+  [22589] = true, -- Atiesh, Greatstaff of the Guardian
+  [37863] = true, -- Direbrew's Remote
+  [128353] = true, -- Admiral's Compass
   [17690] = true,  -- Frostwolf Insignia Rank 1
   [17905] = true,  -- Frostwolf Insignia Rank 2
   [17906] = true,  -- Frostwolf Insignia Rank 3
@@ -516,6 +542,8 @@ addon.MISC_TELEPORT_IDS = {
   [17902] = true,  -- Stormpike Insignia Rank 4
   [17903] = true,  -- Stormpike Insignia Rank 5
   [17904] = true,  -- Stormpike Insignia Rank 6
+  [95568] = true, -- Sunreaver Beacon
+
 }
 
 addon.MISC_THE_TILLERS = {
@@ -557,16 +585,43 @@ addon.MISC_THE_TILLERS = {
   [80513] = true, -- Vintage Bug Sprayer
   [79104] = true, -- Rusty Watering Can
   [89880] = true, -- Dented Shovel
+  [89815] = true, -- Master Plow
 }
 
 addon.MISC_EXCHANGEABLE = {
 }
 
 addon.MISC_CHEST_OPENABLE = {
-  [54537] = true, -- Heart-Shaped Box
-  [21813] = true, -- Bag of Heart Candies
-  [49909] = true, -- Box of Chocolates
-  [50160] = true, -- Lovely Dress Box
+  -- Blingtron
+  [86623] = true,  -- Blingtron 4000 Gift Package
+  [113258] = true, -- Blingtron 5000 Gift Package
+
+  -- Bags
+  [88567] = true,  -- Ghost Iron Lockbox
+  [87217] = true,  -- Small Bag of Goods
+  [69886] = true,  -- Bag of Coins
+  [94159] = true,  -- Small Bag of Zandalari Supplies
+  [20767] = true,  -- Scum Covered Bag
+  [20766] = true,  -- Slimy Bag
+
+  -- Lockbox
+  [68729] = true,  -- Elementium Lockbox
+  [43624] = true,  -- Titanium Lockbox
+  [43622] = true,  -- Froststeel Lockbox
+  [31952] = true,  -- Khorium Lockbox
+  [5760] = true,   -- Eternium Lockbox
+  [5758] = true,   -- Mithril Lockbox
+  [4638] = true,   -- Reinforced Steel Lockbox
+  [4637] = true,   -- Steel Lockbox
+  [4636] = true,   -- Strong Iron Lockbox
+  [4634] = true,   -- Iron Lockbox
+  [4633] = true,   -- Heavy Bronze Lockbox
+  [4632] = true,   -- Ornate Bronze Lockbox
+  [88567] = true,  -- Ghost Iron Lockbox
+  [118193] = true, -- Mysterious Shining Lockbox
+
+  -- Others
+  [89613] = true,  -- Cache of Treasures
 }
 
 

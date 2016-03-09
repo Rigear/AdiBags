@@ -186,9 +186,101 @@ function addon:SetupDefaultFilters()
 
   end
 
-  -- [75] Quest Items
+  -- [85] Miscellaneous Items
   do
-    local questItemFilter = addon:RegisterFilter('Quest', 75, function(self, slotData)
+    local miscFilter = addon:RegisterFilter('Miscellaneous', 85)
+    miscFilter.uiName = L['Miscellaneous']
+    miscFilter.uiDesc = L['Section for some miscellaneous sections.']
+
+    function miscFilter:OnInitialize(slotData)
+      self.db = addon.db:RegisterNamespace('Miscellaneous', {
+        profile = {
+          miscellaneousCategories = {
+            ['Teleport'] = true,
+            ['Exchangeable'] = true,
+            ['Chest & Openable'] = true,
+          },
+          factionCategories = {
+            ['The Tillers'] = true,
+          },
+          mergeEventExchangeable = true,
+          mergeEventChestOpenable = true,
+        }
+      })
+    end
+
+    function miscFilter:GetOptions()
+      return {
+        miscellaneousCategories = {
+          name = L['Miscellaneous Categories'],
+          desc = L['Select which first-level categories should be split by sub-categories.'],
+          type = 'multiselect',
+          order = 10,
+          values = {
+            ['Teleport'] = 'Teleport',
+            ['Exchangeable'] = 'Exchangeable',
+            ['Chest & Openable'] = 'Chest & Openable',
+          }
+        },
+
+        factionCategories = {
+          name = L['Faction Categories'],
+          desc = L['Pets consumables aren\'t considered consumables, now they are a subcategory of pets items (like bandage or biscuit and battle stones)'],
+          type = 'multiselect',
+          order = 15,
+          values = {
+            ['The Tillers'] = 'The Tillers',
+          }
+        },
+
+        mergeEventExchangeable = {
+          name = L['Event exchangeable items'],
+          desc = L['Consider event exchangeable items as "Exchangeable"'],
+          type = 'toggle',
+          width = 'double',
+          order = 20,
+        },
+
+        mergeEventChestOpenable = {
+          name = L['Event chest and openable items'],
+          desc = L['Consider event chest and penable items as "Chest & Openable"'],
+          type = 'toggle',
+          width = 'double',
+          order = 25,
+        },
+      }, addon:GetOptionHandler(self, true)
+    end
+
+    function miscFilter:Filter(slotData)
+      if self.db.profile.miscellaneousCategories['Teleport'] and addon.MISC_TELEPORT_IDS[slotData.itemId] then
+        return L['Misc: Teleport']
+      end
+
+      if self.db.profile.miscellaneousCategories['Exchangeable'] then
+        if addon.MISC_EXCHANGEABLE[slotData.itemId] then
+          return L['Misc: Exchangeable']
+        elseif self.db.profile.mergeEventExchangeable and addon.MISC_EVENT_EXCHANGEABLE[slotData.itemId] then
+          return L['Misc: Exchangeable']
+        end
+      end
+
+      if self.db.profile.miscellaneousCategories['Chest & Openable'] then
+        if addon.MISC_CHEST_OPENABLE[slotData.itemId] then
+          return L['Misc: Chest & Openable']
+        elseif self.db.profile.mergeEventChestOpenable and addon.MISC_EVENT_CHEST_OPENABLE[slotData.itemId] then
+          return L['Misc: Chest & Openable']
+        end
+      end
+
+      if self.db.profile.factionCategories['The Tillers'] and addon.MISC_THE_TILLERS[slotData.itemId] then
+        return L['Misc: The Tillers']
+      end
+    end
+  end
+
+  -- [70] Quest Items
+  do
+    local questItemFilter = addon:RegisterFilter('Quest', 70, function(self, slotData)
       if slotData.class == QUEST or slotData.subclass == QUEST then
         return QUEST
       else
@@ -341,7 +433,6 @@ function addon:SetupDefaultFilters()
         return L['Garrison']
       end
     end
-
   end
 
   -- [10] Pets Items
