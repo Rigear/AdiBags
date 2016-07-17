@@ -547,6 +547,7 @@ addon.MISC_TELEPORT_IDS = {
   -- Hearthstones
   [6948] = true,   -- Hearthstone
   [110560] = true, -- Garrison Hearthstone
+  [140192] = true, -- Dalaran Hearthstone
   [64488] = true,  -- The Innkeeper's Daughter
   [54452] = true,  -- Ethereal Portal
   [93672] = true,  -- Dark Portal
@@ -567,6 +568,7 @@ addon.MISC_TELEPORT_IDS = {
   [58487] = true, -- Potion of Deepholm
 
   -- Others
+  [52251] = true, -- Jaina's Locket
   [65274] = true,  -- Cloak of Coordination (alliance)
   [65274] = true,  -- Cloak of Coordination (horde)
   [63206] = true,  -- Wrap of Unity (alliance)
@@ -599,6 +601,13 @@ addon.MISC_TELEPORT_IDS = {
   [17903] = true, -- Stormpike Insignia Rank 5
   [17904] = true, -- Stormpike Insignia Rank 6
   [95568] = true, -- Sunreaver Beacon
+
+  -- Legion
+  [141013] = true, -- Scroll of Town Portal: Shala'nir
+  [141014] = true, -- Scroll of Town Portal: Sashj'tar
+  [141015] = true, -- Scroll of Town Portal: Kal'delar
+  [141016] = true, -- Scroll of Town Portal: Faronaar
+  [141017] = true, -- Scroll of Town Portal: Lian'tril  
 }
 
 addon.MISC_THE_TILLERS = {
@@ -688,6 +697,9 @@ addon.MISC_CHEST_OPENABLE = {
   [89613] = true,  -- Cache of Treasures
   [34593] = true,  -- Scryer Supplies Package
   [34594] = true,  -- Scryer Supplies Package
+
+  -- Legion
+  [140226] = true, -- Mana-tinged Pack
 }
 
 addon.MISC_TOYS = {
