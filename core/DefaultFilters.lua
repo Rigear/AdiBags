@@ -353,7 +353,7 @@ function addon:SetupDefaultFilters()
           width = 'double',
           order = 20,
         },
-      }, addon:GetOptionHandler(self, false, function() return self:Update() end)
+      }, addon:GetOptionHandler(self, true)
     end
 
     function garrisonFilter:Filter(slotData)
@@ -414,7 +414,7 @@ function addon:SetupDefaultFilters()
           width = 'double',
           order = 20,
         },
-      }, addon:GetOptionHandler(self, false, function() return self:Update() end)
+      }, addon:GetOptionHandler(self, true)
     end
 
     function petsFilter:Filter(slotData)
@@ -561,6 +561,17 @@ function addon:SetupDefaultFilters()
       end
     end
   end
+
+-- [75] Artifact Items
+	do
+		local afItemFilter = addon:RegisterFilter('Artifact Items', 80, function(self, slotData)
+			if slotData.class == CONSUMMABLE and GetItemSpell(slotData.itemId) == "Empowering" then
+				return "Artifact Items"
+			end
+		end)
+		afItemFilter.uiName = L['Artifact Items']
+		afItemFilter.uiDesc = L['Put Artifact items in their own section.']
+	end
 
   -- [50] Equipment
   do
